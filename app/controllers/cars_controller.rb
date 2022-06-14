@@ -17,6 +17,7 @@ class CarsController < ApplicationController
     
       if @car.save
         render json: @car
+        ActionCable.server.broadcast('people', @people)
       else
         render :new, status: :unprocessable_entity
       end
@@ -30,6 +31,7 @@ class CarsController < ApplicationController
       @car = Car.find(params[:id])
   
       @car.update(car_params_update)
+      ActionCable.server.broadcast('people', @people)
       render json: @car
     end
   
@@ -37,6 +39,7 @@ class CarsController < ApplicationController
       @car = Car.find(params[:id])
       @car.destroy
   
+      ActionCable.server.broadcast('people', @people)
       redirect_to root_path, status: :see_other
     end
   

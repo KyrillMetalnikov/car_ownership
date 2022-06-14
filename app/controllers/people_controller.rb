@@ -17,6 +17,7 @@ class PeopleController < ApplicationController
     @person = Person.new(person_params)
       
     if @person.save
+      ActionCable.server.broadcast('people', @people)
       redirect_to @person
     else
       render :new, status: :unprocessable_entity
@@ -31,12 +32,14 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
     
     @person.update(person_params_update)
+    ActionCable.server.broadcast('people', @people)
     render json: @person
   end
     
   def destroy
     @person = Person.find(params[:id])
     @person.destroy
+    ActionCable.server.broadcast('people', @people)
     
     redirect_to root_path, status: :see_other
   end
